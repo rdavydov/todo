@@ -1,0 +1,37 @@
+{{define "content"}}
+<section class="container">
+  <div class="columns">
+    <div class="column">
+      {{ range $Todo  := .TodoList }}
+        <form action="/done/{{$Todo.ID}}" method="POST">
+          <div class="input-group">
+            <input type="hidden" name="id" value="{{ $Todo.ID }}" />
+            <span class="input-group-addon">
+              {{if $Todo.Done}}
+                <del>{{ $Todo.Title }}</del>
+              {{else}}
+                {{ $Todo.Title }}
+              {{end}}
+            </span>
+            <button class="btn btn-action" type="submit">
+              <i class="icon {{if $Todo.Done}}icon-cross{{else}}icon-check{{end}}"></i>
+            </button>
+          </div>
+        </form>
+      {{end}}
+    </div>
+  </div>
+
+  <div class="columns">
+    <div class="column">
+      <form action="/add" method="POST">
+        <div class="form-group input-group">
+          <label class="form-label" for="input-title"></label>
+          <input class="form-input" id="input-title" type="text" name="title" placeholder="Title">
+          <button class="btn btn-primary" type="submit">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{{end}}
