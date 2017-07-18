@@ -84,8 +84,10 @@ func (s *Server) IndexHandler() httprouter.Handle {
 		s.counters.Inc("n_index")
 
 		var todoList []*Todo
-		err := db.All(&todoList)
-		if err != nil {
+		query := db.Select().Reverse().OrderBy("Done")
+		err := query.Find(&todoList)
+		if err != nil && err.Error() != "not found" {
+			log.Printf("error fetching todos: %s", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

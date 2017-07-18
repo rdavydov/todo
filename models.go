@@ -17,6 +17,7 @@ func NewTodo(title string) *Todo {
 	return &Todo{
 		Title:     title,
 		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 }
 
