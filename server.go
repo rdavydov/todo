@@ -161,6 +161,50 @@ func (s *Server) DoneHandler() httprouter.Handle {
 	}
 }
 
+// ClearHandler ...
+func (s *Server) ClearHandler() httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		s.counters.Inc("n_clear")
+
+		var id string
+
+		id = p.ByName("id")
+		if id == "" {
+			id = r.FormValue("id")
+		}
+
+		if id == "" {
+			log.Printf("no id specified to mark as done: %s", id)
+			http.Error(w, "Internal Error", http.StatusInternalServerError)
+			return
+		}
+
+		i, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			log.Printf("error parsing id %s: %s", id, err)
+			http.Error(w, "Internal Error", http.StatusInternalServerError)
+			return
+		}
+
+		var todo Todo
+		err = db.One("ID", i, &todo)
+		if err != nil {
+			log.Printf("error looking up todo %d: %s", i, err)
+			http.Error(w, "Internal Error", http.StatusInternalServerError)
+			return
+		}
+
+		err = db.DeleteStruct(&todo)
+		if err != nil {
+			log.Printf("error deleting todo %d: %s", i, err)
+			http.Error(w, "Internal Error", http.StatusInternalServerError)
+			return
+		}
+
+		http.Redirect(w, r, "/", http.StatusFound)
+	}
+}
+
 // StatsHandler ...
 func (s *Server) StatsHandler() httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -195,7 +239,12 @@ func (s *Server) initRoutes() {
 
 	s.router.GET("/", s.IndexHandler())
 	s.router.POST("/add", s.AddHandler())
+
+	s.router.GET("/done/:id", s.DoneHandler())
 	s.router.POST("/done/:id", s.DoneHandler())
+
+	s.router.GET("/clear/:id", s.ClearHandler())
+	s.router.POST("/clear/:id", s.ClearHandler())
 }
 
 // NewServer ...

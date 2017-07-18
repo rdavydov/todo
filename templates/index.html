@@ -13,9 +13,15 @@
                 {{ $Todo.Title }}
               {{end}}
             </span>
-            <button class="btn btn-action" type="submit">
-              <i class="icon {{if $Todo.Done}}icon-cross{{else}}icon-check{{end}}"></i>
-            </button>
+            {{if not $Todo.Done}}
+              <button class="btn btn-action" type="submit">
+                <i class="icon icon-check"></i>
+              </button>
+            {{else}}
+              <a class="btn btn-action" href="/clear/{{$Todo.ID}}">
+                <i class="icon icon-cross"></i>
+              </a>
+            {{end}}
           </div>
         </form>
       {{end}}
