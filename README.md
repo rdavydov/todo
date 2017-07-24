@@ -10,22 +10,22 @@ in a easy and minimal way.
 ### Source
 
 ```#!bash
-$ go install github.com/prologic/todl/...
+$ go install github.com/prologic/todo/...
 ```
 
 ## Usage
 
-Run todl:
+Run todo:
 
 ```#!bash
-$ todl
+$ todo
 ```
 
 Then visit: http://localhost:8000/
 
 ## Configuration
 
-By default todl stores todos in `todo.db` in the local directory. This can
+By default todo stores todos in `todo.db` in the local directory. This can
 be configured with the `-dbpath /path/to/todo.db` option.
 
 ## License
